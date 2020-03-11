@@ -16,11 +16,12 @@ public class MoneyLaundering
 {	
     public static TransactionAnalyzer transactionAnalyzer;
    
-    
+    public static Object threadMonitor = new Object();
+
     public static AtomicInteger amountOfFilesProcessed;
 	private int amountOfFilesTotal = getTransactionFileList().size();
     static int procesos=5;
-
+    public static boolean pause = false;
     public MoneyLaundering()
     {
         transactionAnalyzer = new TransactionAnalyzer();
@@ -100,12 +101,26 @@ public class MoneyLaundering
         {
             Scanner scanner = new Scanner(System.in);
             String line = scanner.nextLine();
-            if(line.contains("exit"))
+            if(line.contains("exit")) {            	            
                 break;
+            }
+            if(line.isEmpty()){
+                if(pause==false){
+                    System.out.println("pause");
+                    pause=true;
+                }
+                else if(pause==true){
+                    System.out.println("not Pause");
+                    pause=false;
+                    synchronized (threadMonitor) {
+                        //notifica a todos los hilos que estan en el monitor que pueden continuar.
+                        threadMonitor.notifyAll();
+                    }
+                }
+            }
             String message = "Processed %d out of %d files.\nFound %d suspect accounts:\n%s";
             List<String> offendingAccounts = moneyLaundering.getOffendingAccounts();
-            String suspectAccounts = offendingAccounts.stream().reduce("", (s1, s2)-> s1 + "\n"+s2);
-            
+            String suspectAccounts = offendingAccounts.stream().reduce("", (s1, s2)-> s1 + "\n"+s2);            
             message = String.format(message, moneyLaundering.amountOfFilesProcessed.get(), moneyLaundering.amountOfFilesTotal, offendingAccounts.size(), suspectAccounts);
             System.out.println(message);
         }
