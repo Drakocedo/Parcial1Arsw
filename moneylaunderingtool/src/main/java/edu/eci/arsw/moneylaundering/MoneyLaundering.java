@@ -14,36 +14,56 @@ import java.util.stream.Stream;
 
 public class MoneyLaundering 
 {	
-    private TransactionAnalyzer transactionAnalyzer;
-    private TransactionReader transactionReader;
+    public static TransactionAnalyzer transactionAnalyzer;
+   
     
-    private AtomicInteger amountOfFilesProcessed;
+    public static AtomicInteger amountOfFilesProcessed;
 	private int amountOfFilesTotal = getTransactionFileList().size();
     static int procesos=5;
 
     public MoneyLaundering()
     {
         transactionAnalyzer = new TransactionAnalyzer();
-        transactionReader = new TransactionReader();
+       
         amountOfFilesProcessed = new AtomicInteger();
     }
 
-    public void processTransactionData(List<File> transactionFiles )
+    public void processTransactionData()
     
     {
         amountOfFilesProcessed.set(0);
+        List<File> transactionFiles = getTransactionFileList();
+        int archivos =transactionFiles.size();
+        int inicio =0;
+        int parte = archivos/procesos;
+        int fin=0;
         
+        
+        MoneyLaunderingThread hilos[] = new MoneyLaunderingThread[procesos];
+        for (int i=0;i<procesos;i++) {
+            fin= inicio+parte;
+            
+             //Si los hilos no se pueden dividir equitativamente 
+            if (procesos==i+1 && fin<archivos) {
+            	fin=archivos;
+            }
+            
+            //System.out.println("inicio:"+inicio);
+
+            //System.out.println("fin:"+fin);
+            List<File> temporal = new ArrayList<>();
+            for (int k=inicio;k<fin;k++) {
+            	temporal.add(transactionFiles.get(k));
+            	//System.out.println(k);
+            }
+
+            hilos[i]=new MoneyLaunderingThread(temporal);
+            hilos[i].start();
+            inicio=fin;
+        }
         //List<File> transactionFiles = getTransactionFileList();
 
-        for(File transactionFile : transactionFiles)
-        {            
-            List<Transaction> transactions = transactionReader.readTransactionsFromFile(transactionFile);
-            for(Transaction transaction : transactions)
-            {
-                transactionAnalyzer.addTransaction(transaction);
-            }
-            amountOfFilesProcessed.incrementAndGet();
-        }
+      
     }
 
     public List<String> getOffendingAccounts()
@@ -66,37 +86,9 @@ public class MoneyLaundering
     {
         MoneyLaundering moneyLaundering = new MoneyLaundering();
         
-  
+        moneyLaundering.processTransactionData();
 
-        List<File> transactionFiles = getTransactionFileList();
-        int archivos =transactionFiles.size();
-        int inicio =0;
-        int parte = archivos/procesos;
-        int fin=0;
-        
-        Thread  hilos[] = new  Thread[procesos];
-        
-        for (int i=0;i<procesos;i++) {
-            fin= inicio+parte;
-            
-             //Si los hilos no se pueden dividir equitativamente 
-            if (procesos==i+1 && fin<archivos) {
-            	fin=archivos;
-            }
-            
-            //System.out.println("inicio:"+inicio);
-
-            //System.out.println("fin:"+fin);
-            List<File> temporal = new ArrayList<>();
-            for (int k=inicio;k<fin;k++) {
-            	temporal.add(transactionFiles.get(k));
-            	//System.out.println(k);
-            }
-
-            hilos[i]=new Thread(() -> moneyLaundering.processTransactionData(temporal));
-            hilos[i].start();
-            inicio=fin;
-        }    
+           
         //Thread processingThread = new Thread(() -> moneyLaundering.processTransactionData());
         //processingThread.start();
         
