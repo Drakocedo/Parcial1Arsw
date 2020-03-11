@@ -4,6 +4,7 @@ import edu.eci.arsw.exams.moneylaunderingapi.model.SuspectAccount;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.springframework.stereotype.Component;
 
@@ -12,11 +13,12 @@ import org.springframework.stereotype.Component;
 
 @Component("MoneyLaunderingService")
 public class MoneyLaunderingServiceStub implements MoneyLaunderingService {
-	/*
- 	List<SuspectAccount> sospechosos =  new ArrayList<SuspectAccount>();	        
-
+	
+ 	 
+	List<SuspectAccount> sospechosos;
 		
 	 public MoneyLaunderingServiceStub (){
+	 		sospechosos = new CopyOnWriteArrayList<>();
 	        SuspectAccount sa1 = new SuspectAccount();
 	        sa1.setAccountId("juan10");
 	        sa1.setAmountOfSmallTransactions(10000);
@@ -35,7 +37,7 @@ public class MoneyLaunderingServiceStub implements MoneyLaunderingService {
 	        sospechosos.add(sa4);
 
 	    }
-	*/
+	
 	
     @Override
     public void updateAccountStatus(SuspectAccount suspectAccount) {
@@ -72,4 +74,14 @@ public class MoneyLaunderingServiceStub implements MoneyLaunderingService {
     public List<SuspectAccount> getSuspectAccounts() {
         return sospechosos;
     }
+
+
+	
+
+
+	@Override
+	public void postSuspectAccounts(SuspectAccount cuenta) {
+		sospechosos.add(cuenta);
+		
+	}
 }
