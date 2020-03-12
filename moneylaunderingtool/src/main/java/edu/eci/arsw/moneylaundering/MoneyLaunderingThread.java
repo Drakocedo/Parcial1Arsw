@@ -15,7 +15,7 @@ public class MoneyLaunderingThread extends Thread {
     
 	@Override
     public void run() {
-		System.out.println("calculando");
+		//System.out.println("Thread");
 		  for(File transactionFile : transactionFiles)
 	        {            
 	            List<Transaction> transactions = transactionReader.readTransactionsFromFile(transactionFile);
@@ -24,7 +24,7 @@ public class MoneyLaunderingThread extends Thread {
 	            	synchronized (MoneyLaundering.threadMonitor) {
 	                    if (MoneyLaundering.pause) {
 	                        try {
-	                            //Pausa los hilos que estan en el monitor.
+	                            
 	                            MoneyLaundering.threadMonitor.wait();
 	                        } catch (InterruptedException e) {
 	                            e.printStackTrace();

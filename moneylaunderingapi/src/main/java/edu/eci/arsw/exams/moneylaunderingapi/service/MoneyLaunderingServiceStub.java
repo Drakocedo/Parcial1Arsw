@@ -92,6 +92,7 @@ public class MoneyLaunderingServiceStub implements MoneyLaunderingService {
             	 
         }
         if (flag) {
+        	cuenta.setAmountOfSmallTransactions(cuenta.getAmountOfSmallTransactions()+1);
         	sospechosos.add(cuenta);
         }
         
