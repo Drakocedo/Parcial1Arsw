@@ -1,5 +1,9 @@
 # Escuela Colombiana de Ingeniería Julio Garavito - Examen Final de Primer Tercio
 
+video
+https://www.youtube.com/watch?v=ihBOqL378e0&t=5s
+
+
 ## Lavado de activos
 
 Usted ha sido contratado por la DIAN con el fin de desarrollar un programa que permita combatir el lavado de activos. Para tal fin, la DIAN cuenta con un histórico de transacciones de cientos de miles de registros de transacciones que se realizaron a lo largo del año pasado, ese registro esta en archivos con formato `.CSV`. Su tarea es identificar las cuentas bancarias que han recibido transacciones que se consideran fraudulentas.
